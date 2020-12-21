@@ -2,10 +2,8 @@ package com.greenmile.controller
 
 import com.greenmile.domain.Route
 import com.greenmile.repository.RouteRepository
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import kotlinx.coroutines.flow.Flow
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -15,35 +13,33 @@ class RouteController(
 ) {
 
     @PostMapping
-    fun addRoute(@RequestBody route: Route): Mono<Route> {
+    suspend fun addRoute(@RequestBody route: Route): Route {
         return routeRepository.save(route)
     }
 
     @PutMapping
-    fun updateRoute(@RequestBody route: Route): Mono<Route> {
+    suspend fun updateRoute(@RequestBody route: Route): Route {
         return routeRepository.save(route)
     }
 
     @DeleteMapping
-    fun deleteRoute(@RequestBody route: Route): Mono<Void> {
+    suspend fun deleteRoute(@RequestBody route: Route) {
         return routeRepository.delete(route)
     }
 
     @GetMapping
-    fun getRoutes(): Flux<Route> {
+    suspend fun getRoutes(): Flow<Route> {
         return routeRepository.findAll()
     }
 
     @GetMapping("/{id}")
-    fun getRouteById(@PathVariable id: Int): Mono<Route> {
-        return routeRepository.findById(id)
-                .switchIfEmpty(Mono.error(ClassNotFoundException("Route not found")))
+    suspend fun getRouteById(@PathVariable id: Int): Route {
+        return routeRepository.findById(id) ?: throw ClassNotFoundException("Route not found")
     }
 
     @GetMapping("/ByEquipmentId/{id}")
-    fun getRouteByEquipmentId(@PathVariable id: Int): Mono<Route> {
-        return routeRepository.getRouteByEquipment_Id(id)
-                .switchIfEmpty(Mono.error(ClassNotFoundException("Route not found")))
+    suspend fun getRouteByEquipmentId(@PathVariable id: Int): Route {
+        return routeRepository.getRouteByEquipment_Id(id) ?: throw ClassNotFoundException("Route not found")
     }
 
 }
