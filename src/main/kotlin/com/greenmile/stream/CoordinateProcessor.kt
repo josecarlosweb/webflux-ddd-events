@@ -37,6 +37,7 @@ class CoordinateProcessor(
                             .flatMap { lastCoordinate ->
                                 val updatedLastCoordinate = lastCoordinate.copy(latitude = coordinate.latitude, longitude = coordinate.longitude, `when` = coordinate.datePing)
                                 lastCoordinateRepository.save(updatedLastCoordinate)
+                                lastCoordinate
                             }.switchIfEmpty {
                                 val newLasCoordinate = createLastCoordinate(coordinate.equipmentId, coordinate.latitude, coordinate.longitude, route)
                                 lastCoordinateRepository.save(newLasCoordinate)
